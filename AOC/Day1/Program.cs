@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace AOC.Day1
 {
     internal static class Program
     {
-        private static List<int> _numbers = new()
+        private static readonly List<int> _numbers = new()
         {
             2008,
             1529,
@@ -210,6 +212,22 @@ namespace AOC.Day1
 
         private static void Main()
         {
+            var iterations = 1;
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            for (var i = 0; i < iterations; i++)
+            {
+                Run();
+            }
+
+            stopwatch.Stop();
+
+            Console.WriteLine($"Time elapsed: {stopwatch.ElapsedMilliseconds} ms.\nTime per run: {(double) stopwatch.ElapsedMilliseconds / iterations} ms.");
+        }
+
+        private static void Run()
+        {
             var numberToSum = 2020;
             var numbers = new List<int>();
 
@@ -223,7 +241,35 @@ namespace AOC.Day1
                 numbers.Add(number);
             }
 
+            var sums = FindSum(numbers, numberToSum);
 
+            if (sums.Count == 0)
+            {
+                throw new InvalidOperationException($"No numbers add up to {numberToSum}");
+            }
+
+            foreach (var (a, b) in sums)
+            {
+                Console.WriteLine($"Numbers {a} and {b} add up to {numberToSum}. Multiplied: {a * b}");
+            }
+        }
+
+        private static List<(int a, int b)> FindSum(List<int> numbers, int numberToSum)
+        {
+            var sums = new List<(int a, int b)>();
+
+            foreach (var i in numbers)
+            {
+                foreach (var j in numbers)
+                {
+                    if (i + j == numberToSum)
+                    {
+                        sums.Add((i, j));
+                    }
+                }
+            }
+
+            return sums;
         }
     }
 }
