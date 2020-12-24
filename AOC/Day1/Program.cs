@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace AOC.Day1
 {
-    internal static class Program
+    public static class Program
     {
         private static readonly List<int> _numbers = new()
         {
@@ -218,7 +218,18 @@ namespace AOC.Day1
 
             for (var i = 0; i < iterations; i++)
             {
-                Run();
+                PartOne();
+            }
+
+            stopwatch.Stop();
+
+            Console.WriteLine($"Time elapsed: {stopwatch.ElapsedMilliseconds} ms.\nTime per run: {(double) stopwatch.ElapsedMilliseconds / iterations} ms.");
+
+            stopwatch.Start();
+
+            for (var i = 0; i < iterations; i++)
+            {
+                PartTwo();
             }
 
             stopwatch.Stop();
@@ -226,7 +237,7 @@ namespace AOC.Day1
             Console.WriteLine($"Time elapsed: {stopwatch.ElapsedMilliseconds} ms.\nTime per run: {(double) stopwatch.ElapsedMilliseconds / iterations} ms.");
         }
 
-        private static void Run()
+        private static void PartOne()
         {
             var numberToSum = 2020;
             var numbers = new List<int>();
@@ -241,7 +252,7 @@ namespace AOC.Day1
                 numbers.Add(number);
             }
 
-            var sums = FindSum(numbers, numberToSum);
+            var sums = FindSumTwo(numbers, numberToSum);
 
             if (sums.Count == 0)
             {
@@ -254,7 +265,35 @@ namespace AOC.Day1
             }
         }
 
-        private static List<(int a, int b)> FindSum(List<int> numbers, int numberToSum)
+        private static void PartTwo()
+        {
+            var numberToSum = 2020;
+            var numbers = new List<int>();
+
+            foreach (var number in _numbers)
+            {
+                if (number > numberToSum)
+                {
+                    continue;
+                }
+
+                numbers.Add(number);
+            }
+
+            var sums = FindSumThree(numbers, numberToSum);
+
+            if (sums.Count == 0)
+            {
+                throw new InvalidOperationException($"No numbers add up to {numberToSum}");
+            }
+
+            foreach (var (a, b, c) in sums)
+            {
+                Console.WriteLine($"Numbers {a}, {b} and {c} add up to {numberToSum}. Multiplied: {a * b * c}");
+            }
+        }
+
+        private static List<(int a, int b)> FindSumTwo(List<int> numbers, int numberToSum)
         {
             var sums = new List<(int a, int b)>();
 
@@ -265,6 +304,27 @@ namespace AOC.Day1
                     if (i + j == numberToSum)
                     {
                         sums.Add((i, j));
+                    }
+                }
+            }
+
+            return sums;
+        }
+
+        private static List<(int a, int b, int c)> FindSumThree(List<int> numbers, int numberToSum)
+        {
+            var sums = new List<(int a, int b, int c)>();
+
+            foreach (var i in numbers)
+            {
+                foreach (var j in numbers)
+                {
+                    foreach (var k in numbers)
+                    {
+                        if (i + j + k == numberToSum)
+                        {
+                            sums.Add((i, j, k));
+                        }
                     }
                 }
             }
